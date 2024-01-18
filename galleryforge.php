@@ -1,4 +1,10 @@
 <?php
+/*
+ * Plugin Name: GalleryForge
+ * Description: Plugin to creating photo galleries
+ * Version: 0.1.0
+ * Author: <a href="https://t.ly/duzp9">SzumisKarp</a>
+*/
 // Tworzenie nowego post_type "Galeria Zdjęć"
 function custom_gallery_post_type() {
     register_post_type('gallery',
