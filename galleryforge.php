@@ -24,8 +24,26 @@ add_action('init', 'custom_gallery_post_type');
 // Interfejs administracyjny
 function custom_gallery_admin_menu() {
     add_menu_page('Galerie Zdjęć', 'Galerie Zdjęć', 'manage_options', 'custom_gallery_admin', 'custom_gallery_admin_page');
+    
+    // Dodaj podstronę do menu
+    add_submenu_page('custom_gallery_admin', 'Dodaj Nową Galerię', 'Dodaj Nową Galerię', 'manage_options', 'add_new_gallery', 'add_new_gallery_page');
 }
 add_action('admin_menu', 'custom_gallery_admin_menu');
+
+function add_new_gallery_page() {
+    echo '<div class="wrap">';
+    echo '<h1>' . __('Dodaj Nową Galerię', 'text_domain') . '</h1>';
+    
+    // Dodaj formularz do dodawania nowej galerii
+    echo '<form method="post" action="">';
+    echo '<label for="gallery_title">' . __('Gallery Title:', 'text_domain') . '</label>';
+    echo '<input type="text" name="gallery_title" id="gallery_title" required>';
+    echo '<input type="submit" name="add_gallery" class="button button-primary" value="' . __('Add Gallery', 'text_domain') . '">';
+    echo '</form>';
+
+    echo '</div>';
+}
+
 
 function save_gallery_function($gallery_title) {
     // Create a new gallery post
