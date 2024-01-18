@@ -1,5 +1,4 @@
-// functions.php lub plik wtyczki
-
+<?php
 // Tworzenie nowego post_type "Galeria Zdjęć"
 function custom_gallery_post_type() {
     register_post_type('gallery',
@@ -22,10 +21,69 @@ function custom_gallery_admin_menu() {
 }
 add_action('admin_menu', 'custom_gallery_admin_menu');
 
-function custom_gallery_admin_page() {
-    // Kod HTML dla strony administracyjnej do zarządzania galeriami
-    // Tutaj dodaj formularze i obsługę dodawania, edycji, usuwania galerii
+function save_gallery_function($gallery_title) {
+    // Create a new gallery post
+    $gallery_post = array(
+        'post_title'    => $gallery_title,
+        'post_type'     => 'gallery',
+        'post_status'   => 'publish',
+    );
+
+    // Insert the post into the database
+    $gallery_id = wp_insert_post($gallery_post);
+
+    // Check if the gallery was successfully added
+    if ($gallery_id) {
+        echo '<div class="notice notice-success is-dismissible">';
+        echo '<p>' . __('Gallery added successfully!', 'text_domain') . '</p>';
+        echo '</div>';
+    } else {
+        echo '<div class="notice notice-error is-dismissible">';
+        echo '<p>' . __('Error adding gallery. Please try again.', 'text_domain') . '</p>';
+        echo '</div>';
+    }
 }
+
+function custom_gallery_admin_page() {
+    echo '<div class="wrap">';
+    echo '<h1>' . __('Manage Galerie Zdjęć', 'text_domain') . '</h1>';
+
+    // Form for adding a new gallery
+    echo '<form method="post" action="">';
+    echo '<label for="gallery_title">' . __('Gallery Title:', 'text_domain') . '</label>';
+    echo '<input type="text" name="gallery_title" id="gallery_title" required>';
+    echo '<input type="submit" name="add_gallery" class="button button-primary" value="' . __('Add Gallery', 'text_domain') . '">';
+    echo '</form>';
+
+    // Process form submission for adding a new gallery
+    if (isset($_POST['add_gallery'])) {
+        $gallery_title = sanitize_text_field($_POST['gallery_title']);
+        save_gallery_function($gallery_title);
+    }
+
+    // Display existing galleries
+    echo '<h2>' . __('Existing Galleries', 'text_domain') . '</h2>';
+    echo '<ul>';
+
+    // Query and display existing galleries
+    $gallery_query = new WP_Query(array(
+        'post_type' => 'gallery',
+        'posts_per_page' => -1,
+    ));
+
+    while ($gallery_query->have_posts()) : $gallery_query->the_post();
+        echo '<li>';
+        echo '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
+        echo '</li>';
+    endwhile;
+
+    // Restore global post data
+    wp_reset_postdata();
+
+    echo '</ul>';
+    echo '</div>';
+}
+
 
 // Dodawanie i zarządzanie zdjęciami
 // W kodzie strony edycji galerii dodaj obsługę dodawania i zarządzania zdjęciami (załącznikami)
