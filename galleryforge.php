@@ -4,12 +4,11 @@
  * Description: Plugin to create and manage photo galleries
  * Version: 0.1.0
  * Author: <a href="https://t.ly/duzp9">SzumisKarp</a>
-*/
-
+ */
 function custom_post_type_galeria_zdjec() {
     $args = array(
         'public' => true,
-        'label'  => 'Galeria Zdjęć',
+        'label' => 'Galeria Zdjęć',
         'supports' => array('title'),
         'publicly_queryable' => true,
         'show_ui' => true,
@@ -20,6 +19,7 @@ function custom_post_type_galeria_zdjec() {
         'has_archive' => true,
         'hierarchical' => false,
         'menu_position' => null,
+        'has_archive' => 'galeria_zdjec',
     );
 
     register_post_type('galeria_zdjec', $args);
@@ -84,4 +84,39 @@ function gallery_form_page() {
     echo '</form>';
     echo '</div>';
 }
-?>
+function display_gallery_images($gallery_name) {
+    $gallery_folder = plugin_dir_path(__FILE__) . 'images/' . sanitize_title($gallery_name);
+    $image_files = glob($gallery_folder . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+
+    if (!empty($image_files)) {
+        echo '<div class="gallery-images">';
+        foreach ($image_files as $image_file) {
+            $image_url = esc_url(site_url('/wp-content/plugins/GalleryForge/images/' . sanitize_title($gallery_name) . '/' . basename($image_file)));
+            
+            echo '<div class="gallery-image">';
+            echo '<img src="' . $image_url . '" alt="' . esc_attr(basename($image_file)) . '" style="width: 100%; height: auto;">';
+            echo '</div>';
+        }
+        echo '</div>';
+    } else {
+        echo '<p>No images found for this gallery.</p>';
+    }
+}
+
+
+
+function custom_gallery_shortcode($atts) {
+    $atts = shortcode_atts(array(
+        'name' => '',
+    ), $atts, 'gallery');
+
+    if (empty($atts['name'])) {
+        return 'Please provide a gallery name in the shortcode.';
+    }
+
+    ob_start();
+    display_gallery_images($atts['name']);
+    return ob_get_clean();
+}
+
+add_shortcode('gallery', 'custom_gallery_shortcode');
