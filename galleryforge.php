@@ -49,20 +49,60 @@ function gallery_form_page() {
             mkdir($gallery_folder, 0755, true);
         }
 
+        $attachments = array();
+
         foreach ($image_files['name'] as $key => $image_name) {
             $image_path = $gallery_folder . '/' . sanitize_file_name($image_name);
             move_uploaded_file($image_files['tmp_name'][$key], $image_path);
+
+            // Add each image as an attachment
+            $attachment = array(
+                'guid' => $image_path,
+                'post_mime_type' => mime_content_type($image_path),
+                'post_title' => preg_replace('/\.[^.]+$/', '', basename($image_path)),
+                'post_content' => '',
+                'post_status' => 'inherit'
+            );
+
+            $attachment_id = wp_insert_attachment($attachment, $image_path);
+            $attachments[] = $attachment_id;
         }
 
+        // Update gallery post with attached images
         $gallery_post = array(
             'post_title' => $gallery_name,
             'post_type' => 'galeria_zdjec',
             'post_status' => 'publish',
+            'post_content' => '',
+            'post_parent' => 0,
+            'post_mime_type' => '',
+            'guid' => '',
+            'post_excerpt' => '',
+            'post_date' => date('Y-m-d H:i:s'),
+            'post_date_gmt' => date('Y-m-d H:i:s'),
+            'comment_status' => 'closed',
+            'ping_status' => 'closed',
+            'post_password' => '',
+            'to_ping' => '',
+            'pinged' => '',
+            'post_modified' => date('Y-m-d H:i:s'),
+            'post_modified_gmt' => date('Y-m-d H:i:s'),
+            'post_content_filtered' => '',
+            'post_parent' => 0,
+            'menu_order' => 0,
+            'post_type' => 'galeria_zdjec',
+            'post_mime_type' => '',
+            'comment_count' => 0
         );
 
         $gallery_post_id = wp_insert_post($gallery_post);
 
         if ($gallery_post_id) {
+            // Attach images to the gallery
+            foreach ($attachments as $attachment_id) {
+                wp_update_post(array('ID' => $attachment_id, 'post_parent' => $gallery_post_id));
+            }
+
             wp_redirect(admin_url('edit.php?post_type=galeria_zdjec&page=add_gallery&message=success'));
             exit;
         }
@@ -84,6 +124,7 @@ function gallery_form_page() {
     echo '</form>';
     echo '</div>';
 }
+
 function display_gallery_images($gallery_name) {
     $gallery_folder = plugin_dir_path(__FILE__) . 'images/' . sanitize_title($gallery_name);
     $image_files = glob($gallery_folder . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
@@ -103,8 +144,6 @@ function display_gallery_images($gallery_name) {
     }
 }
 
-
-
 function custom_gallery_shortcode($atts) {
     $atts = shortcode_atts(array(
         'name' => '',
@@ -120,3 +159,4 @@ function custom_gallery_shortcode($atts) {
 }
 
 add_shortcode('gallery', 'custom_gallery_shortcode');
+?>
