@@ -202,6 +202,20 @@ function display_gallery_shortcode($atts) {
     wp_reset_postdata();
     return ob_get_clean();
 }
+function hide_add_gallery_submenu_page() {
+    global $submenu;
+    // Sprawdź, czy podstrona o nazwie "Dodaj nową galerię" istnieje
+    if (isset($submenu['edit.php?post_type=galeria_zdjec'])) {
+        // Szukaj indeksu podstrony o nazwie "Dodaj nową galerię" i usuń ją z submenu
+        foreach ($submenu['edit.php?post_type=galeria_zdjec'] as $index => $subpage) {
+            if (isset($subpage[0]) && $subpage[0] === 'Dodaj nową galerię') {
+                unset($submenu['edit.php?post_type=galeria_zdjec'][$index]);
+                break;
+            }
+        }
+    }
+}
+add_action('admin_menu', 'hide_add_gallery_submenu_page');
 add_shortcode('gallery', 'display_gallery_shortcode');
 add_action('admin_menu', 'add_photo_gallery_submenu_page');
 add_action('init', 'create_photo_gallery_post_type');
