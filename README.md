@@ -1,69 +1,36 @@
 # GalleryForge WordPress Plugin
 
-**Version: 0.1.0**
+**Version:** 0.2.0  
+**Author:** [SzumisKarp](https://t.ly/duzp9)
 
-## Overview
+## Description
 
-GalleryForge is a powerful WordPress plugin crafted by [SzumisKarp](https://t.ly/duzp9) for seamlessly creating and managing stunning photo galleries on your WordPress site.
-
-## Installation
-
-1. **Download:**
-   - [Download the latest release](#) as a zip file.
-
-2. **Upload & Activate:**
-   - Navigate to your WordPress admin panel.
-   - Go to Plugins > Add New > Upload Plugin.
-   - Upload the downloaded zip file and activate the plugin.
+GalleryForge is a WordPress plugin that empowers you to effortlessly create and manage captivating photo galleries on your WordPress site. This lightweight plugin provides a user-friendly interface for adding new galleries, attaching images, and displaying them with ease.
 
 ## Features
 
-### 1. Photo Gallery Custom Post Type
+- **Custom Post Type:** Introduces a custom post type named "Galeria Zdjęć" for managing photo galleries.
+- **Gallery Creation:** Easily create new galleries through the WordPress admin interface.
+- **Media Uploader:** Seamless integration of the WordPress media uploader for adding and managing gallery images.
+- **Shortcode Support:** Utilize the `[Gallery]` shortcode to effortlessly display your beautifully crafted galleries.
+- **Recent Galleries Widget:** A handy widget to showcase recently added galleries in your sidebar.
 
-Introduces a custom post type named 'galeria_zdjec' for effortlessly organizing and managing photo galleries with a user-friendly interface.
+## Installation
 
-### 2. New Gallery Submenu Page
-
-Adds a dedicated submenu page under 'Galeria Zdjęć' for creating new galleries, enhancing the overall user experience.
-
-### 3. Gallery Creation Form
-
-A sleek form on the 'Nowa Galeria' page allows users to create new galleries by providing a name and easily adding images using the integrated media uploader.
-
-### 4. Media Uploader Integration
-
-Leverages the WordPress media uploader for a seamless image selection and attachment process, making gallery creation a breeze.
-
-### 5. Gallery Display Shortcode
-
-Integrates a customizable `[gallery]` shortcode for effortlessly displaying galleries on the front end. Customize the display by specifying the gallery name as an attribute.
-
-### 6. Submenu Page Access Control
-
-Hides the 'Add New' submenu page under 'galeria_zdjec' for improved access control and a streamlined gallery creation workflow.
+1. Download the `galleryforge` folder.
+2. Upload the folder to your WordPress plugins directory.
+3. Activate the "GalleryForge" plugin through the WordPress admin.
 
 ## Usage
 
-1. **Navigate:**
-   - Visit 'Galerie Zdjęć' in the WordPress admin panel.
+1. Navigate to "Galerie Zdjęć" in the WordPress admin menu.
+2. Click "Dodaj nową galerię" to create a new gallery.
+3. Enter the gallery name, add images using the media uploader, and create your gallery.
+4. Use the `[Gallery]` shortcode to display your gallery on any post or page.
 
-2. **Create Gallery:**
-   - Click on 'Nowa Galeria' to access the gallery creation form.
-   - Provide a name and use the media uploader to add images.
-   - Submit the form to create your gallery.
+## Additional Information
 
-3. **Display Gallery:**
-   - Use the `[gallery]` shortcode with the desired gallery name as an attribute to showcase your gallery on the front end.
+- **WordPress Version:** Tested on WordPress 5.9.1.
+- **Contributions:** Contributions and feedback are welcome. Feel free to submit issues or pull requests.
 
-## Customization
-
-- Adjust the image size and styling in the `display_gallery_shortcode()` function.
-- Modify the custom post type and form labels in the `create_photo_gallery_post_type()` function.
-
-## Contributors
-
-- [SzumisKarp](https://t.ly/duzp9) - Plugin Author
-
-## License
-
-This plugin is licensed under the [GPL-2.0-or-later](https://www.gnu.org/licenses/gpl-2.0.html) license.
+Enjoy showcasing your photos with GalleryForge! 📸✨
