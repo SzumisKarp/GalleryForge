@@ -30,7 +30,7 @@ GalleryForge is a WordPress plugin that empowers you to effortlessly create and 
 
 ## Additional Information
 
-- **WordPress Version:** Tested on WordPress 5.9.1.
+- **WordPress Version:** Tested on WordPress 6.4.2
 - **Contributions:** Contributions and feedback are welcome. Feel free to submit issues or pull requests.
 
 Enjoy showcasing your photos with GalleryForge! 📸✨
