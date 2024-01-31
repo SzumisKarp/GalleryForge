@@ -2,7 +2,7 @@
 /*
  * Plugin Name: GalleryForge
  * Description: Plugin to create and manage photo galleries
- * Version: 0.3.3
+ * Version: 0.3.4
  * Author: <a href="https://t.ly/duzp9">SzumisKarp</a>
  */
 

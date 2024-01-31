@@ -9,6 +9,7 @@ GalleryForge is a WordPress plugin designed to simplify the creation and managem
 - **Custom Meta Boxes:** Intuitive interface with custom meta boxes for managing gallery images and settings.
 - **Frontend Display:** Utilize the `[gallery name="GalleryName"]` shortcode to seamlessly display galleries on the frontend.
 - **Lightbox Effect:** Enhance user experience with a built-in lightbox effect for larger image viewing.
+- **Recent Galleries Widget:** A widget to display the most recently created galleries on your site.
 
 ## Installation
 
@@ -22,6 +23,7 @@ GalleryForge is a WordPress plugin designed to simplify the creation and managem
 2. **Upload Images:** Utilize the "Dodaj/Zarządzaj Zdjęciami" button to upload and manage gallery images easily.
 3. **Configure Settings:** Adjust gallery settings, including image size, in the "Ustawienia Galerii" meta box.
 4. **Display on Frontend:** Use the `[gallery name="GalleryName"]` shortcode with the specified gallery name to showcase it on your website.
+5. **Recent Galleries Widget:** Add the "Recent Galleries Widget" to your site to display a list of the most recently created galleries.
 
 ---
 
