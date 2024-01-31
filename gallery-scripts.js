@@ -43,31 +43,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayGalleryImages(images) {
         var container = document.getElementById('gallery-images-container');
         container.innerHTML = '';
-
+    
         if (images.length > 0) {
             var rowDiv;
+            
             for (var i = 0; i < images.length; i++) {
                 if (i % 3 === 0) {
                     // Start a new row for every 3 images
                     rowDiv = document.createElement('div');
                     rowDiv.className = 'gallery-row';
-                    container.appendChild(rowDiv);
                 }
-
+    
                 var img = document.createElement('img');
                 img.src = images[i];
                 img.alt = 'Gallery Image';
                 img.style.maxWidth = '100px';
                 img.style.maxHeight = '100px';
                 img.style.marginRight = '10px';
-
+    
                 var columnDiv = document.createElement('div');
                 columnDiv.className = 'gallery-column';
                 columnDiv.appendChild(img);
                 rowDiv.appendChild(columnDiv);
+    
+                if ((i + 1) % 3 === 0 || i === images.length - 1) {
+                    // Add the row when 3 images are reached or it's the last image
+                    container.appendChild(rowDiv);
+                }
             }
         } else {
             container.innerHTML = '<p>Brak dodanych zdjęć</p>';
         }
-    }
+    }        
 });
