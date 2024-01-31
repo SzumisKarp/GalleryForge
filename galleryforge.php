@@ -2,7 +2,7 @@
 /*
  * Plugin Name: GalleryForge
  * Description: Plugin to create and manage photo galleries
- * Version: 0.3.0
+ * Version: 0.3.2
  * Author: <a href="https://t.ly/duzp9">SzumisKarp</a>
  */
 
@@ -75,10 +75,21 @@ function display_gallery_images_meta_box( $post ) {
     $gallery_images = get_post_meta( $post->ID, '_gallery_images', true );
 
     // Output HTML for displaying images
+    echo '<style>';
+    echo '#gallery-images-container { display: flex; flex-wrap: wrap; }';
+    echo '#gallery-images-container div { width: 150px; height: 150px; margin-right: 10px; margin-bottom: 10px; overflow: hidden; border: 1px solid #ddd; border-radius: 4px; transition: 0.3s; }';
+    echo '#gallery-images-container img { width: 100%; height: 100%; object-fit: cover; }';
+    echo '#gallery-images-container div:hover { border: 1px solid #555; }';
+    echo '#upload-gallery-images { background-color: #4CAF50; color: white; padding: 10px; border: none; border-radius: 4px; cursor: pointer; }';
+    echo '#upload-gallery-images:hover { background-color: #45a049; }';
+    echo '</style>';
+
     echo '<div id="gallery-images-container">';
     if ( ! empty( $gallery_images ) ) {
         foreach ( $gallery_images as $image ) {
-            echo '<img src="' . esc_url( $image ) . '" alt="Gallery Image" style="max-width: 100px; max-height: 100px; margin-right: 10px;" />';
+            echo '<div style="width: 150px; height: 150px; margin-right: 10px; margin-bottom: 10px; overflow: hidden; border: 1px solid #ddd; border-radius: 4px; transition: 0.3s;">';
+            echo '<img src="' . esc_url( $image ) . '" alt="Gallery Image" style="width: 100%; height: 100%; object-fit: cover;">';
+            echo '</div>';
         }
     } else {
         echo '<p>Brak dodanych zdjęć</p>';
@@ -91,6 +102,7 @@ function display_gallery_images_meta_box( $post ) {
     // Add hidden input field to store image URLs
     echo '<input type="hidden" name="gallery_images" id="gallery_images" value="' . esc_attr( json_encode( $gallery_images ) ) . '" />';
 }
+
 
 // Save gallery images when the post is saved
 function save_gallery_images( $post_id ) {
@@ -105,34 +117,35 @@ function save_gallery_images( $post_id ) {
 
 // Hook into the 'save_post' action to save gallery images
 add_action( 'save_post', 'save_gallery_images' );
+
 // Shortcode to display gallery based on the specified name
 function galleryforge_shortcode($atts) {
-    $atts = shortcode_atts( array(
+    $atts = shortcode_atts(array(
         'name' => '',
-    ), $atts, 'gallery' );
+    ), $atts, 'gallery');
 
-    $gallery_name = sanitize_text_field( $atts['name'] );
+    $gallery_name = sanitize_text_field($atts['name']);
 
-    if ( empty( $gallery_name ) ) {
+    if (empty($gallery_name)) {
         return 'Gallery name not provided.';
     }
 
     // Query to get the gallery post
-    $gallery_post = get_page_by_title( $gallery_name, OBJECT, 'galeria_zdjec' );
+    $gallery_post = get_page_by_title($gallery_name, OBJECT, 'galeria_zdjec');
 
-    if ( ! $gallery_post ) {
+    if (!$gallery_post) {
         return 'Gallery not found.';
     }
 
     // Get the saved images for the gallery
-    $gallery_images = get_post_meta( $gallery_post->ID, '_gallery_images', true );
+    $gallery_images = get_post_meta($gallery_post->ID, '_gallery_images', true);
 
-    // Output HTML for displaying images with a fixed size
-    $output = '<div id="gallery-images-container" style="display: flex; flex-wrap: wrap;">'; // Added flexbox styling
-    if ( ! empty( $gallery_images ) ) {
-        foreach ( $gallery_images as $image ) {
-            $output .= '<div style="width: 150px; height: 150px; margin-right: 10px; margin-bottom: 10px; overflow: hidden;">';
-            $output .= '<img src="' . esc_url( $image ) . '" alt="Gallery Image" style="width: 100%; height: 100%; object-fit: cover;">';
+    // Output HTML for displaying images with a styled gallery
+    $output = '<div class="galleryforge-gallery-container">'; // Added container class
+    if (!empty($gallery_images)) {
+        foreach ($gallery_images as $image) {
+            $output .= '<div class="galleryforge-gallery-image">';
+            $output .= '<img src="' . esc_url($image) . '" alt="Gallery Image" class="galleryforge-image">';
             $output .= '</div>';
         }
     } else {
@@ -140,9 +153,42 @@ function galleryforge_shortcode($atts) {
     }
     $output .= '</div>';
 
+    // Apply additional styling to the gallery
+    $output .= '<style>';
+    $output .= '.galleryforge-gallery-container { display: flex; flex-wrap: wrap; justify-content: space-around; }';
+    $output .= '.galleryforge-gallery-image { width: 150px; height: 150px; margin: 10px; overflow: hidden; border: 2px solid #ddd; border-radius: 8px; transition: 0.3s; position: relative; }';
+    $output .= '.galleryforge-gallery-image:hover { border-color: #4CAF50; cursor: pointer; }';
+    $output .= '.galleryforge-image { width: 100%; height: 100%; object-fit: cover; }';
+    $output .= '.galleryforge-lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); justify-content: center; align-items: center; }';
+    $output .= '.galleryforge-lightbox img { max-width: 90%; max-height: 90%; }';
+    $output .= '.gallery-row {display: flex;justify-content: space-between;margin-bottom: 10px; }';
+    $output .= '.gallery-column {flex: 0 0 calc(33.33% - 10px); }';
+    $output .= '</style>';
+
+    // Lightbox script
+    $output .= '<script>';
+    $output .= 'document.addEventListener("DOMContentLoaded", function() {';
+    $output .= '  var images = document.querySelectorAll(".galleryforge-gallery-image img");';
+    $output .= '  var lightbox = document.createElement("div");';
+    $output .= '  lightbox.className = "galleryforge-lightbox";';
+    $output .= '  document.body.appendChild(lightbox);';
+    $output .= '  images.forEach(function(image) {';
+    $output .= '    image.addEventListener("click", function() {';
+    $output .= '      lightbox.innerHTML = \'<span class="galleryforge-close-btn">&times;</span><img src="\' + this.src + \'" alt="Gallery Image">\';';
+    $output .= '      lightbox.style.display = "flex";';
+    $output .= '    });';
+    $output .= '  });';
+    $output .= '  lightbox.addEventListener("click", function(e) {';
+    $output .= '    if (e.target !== e.currentTarget) return;';
+    $output .= '    lightbox.style.display = "none";';
+    $output .= '  });';
+    $output .= '});';
+    $output .= '</script>';
+
     return $output;
 }
 
 // Register the shortcode
-add_shortcode( 'gallery', 'galleryforge_shortcode' );
+add_shortcode('gallery', 'galleryforge_shortcode');
+
 ?>

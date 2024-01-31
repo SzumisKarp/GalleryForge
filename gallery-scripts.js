@@ -45,15 +45,27 @@ document.addEventListener('DOMContentLoaded', function() {
         container.innerHTML = '';
 
         if (images.length > 0) {
-            images.forEach(function(url) {
+            var rowDiv;
+            for (var i = 0; i < images.length; i++) {
+                if (i % 3 === 0) {
+                    // Start a new row for every 3 images
+                    rowDiv = document.createElement('div');
+                    rowDiv.className = 'gallery-row';
+                    container.appendChild(rowDiv);
+                }
+
                 var img = document.createElement('img');
-                img.src = url;
+                img.src = images[i];
                 img.alt = 'Gallery Image';
                 img.style.maxWidth = '100px';
                 img.style.maxHeight = '100px';
                 img.style.marginRight = '10px';
-                container.appendChild(img);
-            });
+
+                var columnDiv = document.createElement('div');
+                columnDiv.className = 'gallery-column';
+                columnDiv.appendChild(img);
+                rowDiv.appendChild(columnDiv);
+            }
         } else {
             container.innerHTML = '<p>Brak dodanych zdjęć</p>';
         }
