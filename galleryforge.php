@@ -117,9 +117,13 @@ function display_gallery_images_meta_box($post) {
 
     // Add hidden input field to store image URLs
     echo '<input type="hidden" name="gallery_images" id="gallery_images" value="' . esc_attr(json_encode($gallery_images)) . '" />';
+
+    // Add recent galleries widget
+    echo '<div class="recent-galleries-widget">';
+    echo '<h3>Ostatnio dodane galerie</h3>';
+    the_widget('RecentGalleriesWidget');
+    echo '</div>';
 }
-
-
 
 // Display content of the custom meta box for gallery settings
 function display_gallery_settings_meta_box( $post ) {
@@ -156,7 +160,6 @@ function save_gallery_data( $post_id ) {
 // Hook into the 'save_post' action to save gallery data
 add_action( 'save_post', 'save_gallery_data' );
 
-// Shortcode to display gallery based on the specified name
 // Shortcode to display gallery based on the specified name
 function galleryforge_shortcode($atts) {
     $atts = shortcode_atts(
@@ -255,4 +258,75 @@ function galleryforge_shortcode($atts) {
 // Register the shortcode
 add_shortcode('gallery', 'galleryforge_shortcode');
 
+// Register the Recent Galleries Widget
+function register_recent_galleries_widget() {
+    register_widget('RecentGalleriesWidget');
+}
+add_action('widgets_init', 'register_recent_galleries_widget');
+
+// Define the Recent Galleries Widget class
+class RecentGalleriesWidget extends WP_Widget {
+    // Widget setup
+    public function __construct() {
+        parent::__construct(
+            'recent_galleries_widget', // Base ID
+            'Recent Galleries Widget', // Widget name
+            array('description' => 'Displays recently created galleries') // Widget description
+        );
+    }
+
+    // Front-end display of the widget
+    public function widget($args, $instance) {
+        echo $args['before_widget'];
+
+        $title = apply_filters('widget_title', $instance['title']);
+        if (!empty($title)) {
+            echo $args['before_title'] . $title . $args['after_title'];
+        }
+
+        $recent_galleries = $this->get_recent_galleries();
+        if (!empty($recent_galleries)) {
+            echo '<ul>';
+            foreach ($recent_galleries as $gallery) {
+                echo '<li><a href="' . esc_url(get_permalink($gallery->ID)) . '">' . esc_html($gallery->post_title) . '</a></li>';
+            }
+            echo '</ul>';
+        } else {
+            echo '<p>No recent galleries found.</p>';
+        }
+
+        echo $args['after_widget'];
+    }
+
+    // Back-end widget form
+    public function form($instance) {
+        $title = isset($instance['title']) ? esc_attr($instance['title']) : '';
+        ?>
+        <p>
+            <label for="<?php echo $this->get_field_id('title'); ?>">Title:</label>
+            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+        </p>
+        <?php
+    }
+
+    // Updating widget replacing old instances with new
+    public function update($new_instance, $old_instance) {
+        $instance = array();
+        $instance['title'] = (!empty($new_instance['title'])) ? strip_tags($new_instance['title']) : '';
+        return $instance;
+    }
+
+    // Get the most recent galleries
+    private function get_recent_galleries() {
+        $args = array(
+            'post_type' => 'galeria_zdjec',
+            'posts_per_page' => 5, // Adjust the number of galleries to display
+            'orderby' => 'date',
+            'order' => 'DESC',
+        );
+
+        $recent_galleries = get_posts($args);
+        return $recent_galleries;
+    }
+}
 ?>
